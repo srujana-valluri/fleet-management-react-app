@@ -7,7 +7,9 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (username === "admin" && password === "admin") {
+    // You can set any credentials you want here
+    if ((username === "admin" && password === "admin") ||
+        (username === "Srujana" && password === "1234")) {
       localStorage.setItem("isAdmin", "true");
       navigate("/admin");
     } else {
@@ -18,18 +20,17 @@ function Login() {
   return (
     <div>
       <h2>Admin Login</h2>
-
       <input
         placeholder="Username"
+        value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
-
       <input
         placeholder="Password"
         type="password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-
       <button onClick={handleLogin}>Login</button>
     </div>
   );
