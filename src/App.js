@@ -1,22 +1,31 @@
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/login"
+          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -1,22 +1,28 @@
  import React from "react";
 
-const FleetCard = ({ fleet, updateDriver, toggleAvailability, deleteFleet }) => {
-  if (!fleet) return null; // safety check
+const images = {
+  Auto: "https://www.nicepng.com/png/detail/90-901555_auto-rickshaw-png-file-auto-rickshaw.png",
+  Car: "https://www.whoa.in/download/ferrari-superfast_hp-red-upcoming-car-hd-photos-wallpaper",
+  Truck: "https://www.shutterstock.com/image-photo/semi-trailer-truck-isolated-on-600nw-2602452961.jpg",
+  Bus: "https://assets.volvo.com/is/image/VolvoInformationTechnologyAB/blue-bus?qlt=82&wid=1024&ts=1660212095501&dpr=off&fit=constrain",
+};
 
+const FleetCard = ({ fleet, updateDriver, toggleStatus, deleteFleet }) => {
   return (
-    <div style={{ border: "1px solid gray", padding: "10px" }}>
-      <img
-        src="https://via.placeholder.com/150"
-        alt="vehicle"
-        style={{ width: "100%" }}
-      />
-      <h4>{fleet.regNo}</h4>
-      <p>Category: {fleet.category}</p>
-      <p>Driver: {fleet.driver}</p>
-      <p>Availability: {fleet.availability}</p>
-      <button onClick={() => updateDriver(fleet.id)}>Update Driver</button>
-      <button onClick={() => toggleAvailability(fleet.id)}>Toggle Availability</button>
-      <button onClick={() => deleteFleet(fleet.id)}>Delete Vehicle</button>
+    <div className="card">
+      <img src={images[fleet.category]} alt={fleet.category} />
+
+      <h3>{fleet.regNo}</h3>
+      <p><b>Category:</b> {fleet.category}</p>
+      <p><b>Driver:</b> {fleet.driver}</p>
+
+      <p className={fleet.status === "Available" ? "status green" : "status red"}>
+        {fleet.status}
+      </p>
+
+      <button className="btn blue" onClick={() => updateDriver(fleet.id)}>Update Driver</button>
+      <button className="btn orange" onClick={() => toggleStatus(fleet.id)}>Toggle Status</button>
+      <button className="btn red" onClick={() => deleteFleet(fleet.id)}>Delete</button>
     </div>
   );
 };

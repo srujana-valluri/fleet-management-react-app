@@ -1,5 +1,5 @@
  import React, { useState, useCallback } from "react";
-import FleetCard from "./FleetCard";
+import FleetCard from "../components/FleetCard";
 
 const Admin = () => {
   const [fleets, setFleets] = useState([]);
@@ -7,110 +7,85 @@ const Admin = () => {
     regNo: "",
     category: "",
     driver: "",
-    availability: "Available",
+    status: "Available",
   });
 
-  // Controlled form handler
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Add Fleet
-  const handleAddFleet = () => {
-    const { regNo, category, driver } = form;
-    if (!regNo || !category || !driver) {
-      alert("Please fill all required fields!");
+  const addFleet = () => {
+    if (!form.regNo || !form.category || !form.driver) {
+      alert("All fields are required");
       return;
     }
 
-    const newFleet = {
-      id: Date.now(), // unique id
-      ...form,
-    };
-
-    setFleets((prev) => [...prev, newFleet]);
-    setForm({ regNo: "", category: "", driver: "", availability: "Available" });
+    setFleets([...fleets, { ...form, id: Date.now() }]);
+    setForm({ regNo: "", category: "", driver: "", status: "Available" });
   };
 
-  // Handlers for FleetCard actions
   const updateDriver = useCallback((id) => {
-    const newDriver = prompt("Enter new driver name");
-    if (!newDriver || !newDriver.trim()) return;
+    const name = prompt("Enter new driver name");
+    if (!name || !name.trim()) return;
+
     setFleets((prev) =>
-      prev.map((fleet) =>
-        fleet.id === id ? { ...fleet, driver: newDriver } : fleet
-      )
+      prev.map((f) => (f.id === id ? { ...f, driver: name } : f))
     );
   }, []);
 
-  const toggleAvailability = useCallback((id) => {
+  const toggleStatus = useCallback((id) => {
     setFleets((prev) =>
-      prev.map((fleet) =>
-        fleet.id === id
+      prev.map((f) =>
+        f.id === id
           ? {
-              ...fleet,
-              availability:
-                fleet.availability === "Available" ? "Unavailable" : "Available",
+              ...f,
+              status: f.status === "Available" ? "Unavailable" : "Available",
             }
-          : fleet
+          : f
       )
     );
   }, []);
 
   const deleteFleet = useCallback((id) => {
-    if (!window.confirm("Are you sure to delete this vehicle?")) return;
-    setFleets((prev) => prev.filter((fleet) => fleet.id !== id));
+    if (window.confirm("Are you sure?")) {
+      setFleets((prev) => prev.filter((f) => f.id !== id));
+    }
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
-      {/* Sidebar */}
-      <div style={{ width: "300px", padding: "10px", borderRight: "1px solid gray" }}>
-        <h3>Add Fleet</h3>
-        <input
-          type="text"
-          placeholder="Vehicle Reg No"
-          name="regNo"
-          value={form.regNo}
-          onChange={handleChange}
-        />
-        <select name="category" value={form.category} onChange={handleChange}>
-          <option value="">Select Category</option>
-          <option value="Auto">Auto</option>
-          <option value="Car">Car</option>
-          <option value="Truck">Truck</option>
-          <option value="Bus">Bus</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Driver Name"
-          name="driver"
-          value={form.driver}
-          onChange={handleChange}
-        />
-        <select
-          name="availability"
-          value={form.availability}
-          onChange={handleChange}
-        >
-          <option value="Available">Available</option>
-          <option value="Unavailable">Unavailable</option>
-        </select>
-        <button onClick={handleAddFleet}>Add Fleet</button>
-      </div>
+    <div className="admin">
+      <h2>Fleet Management Dashboard</h2>
 
-      {/* Main content */}
-      <div style={{ flex: 1, padding: "10px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-        {fleets.map((fleet) => (
-          <FleetCard
-            key={fleet.id}
-            fleet={fleet}
-            updateDriver={updateDriver}
-            toggleAvailability={toggleAvailability}
-            deleteFleet={deleteFleet}
-          />
-        ))}
+      <div className="layout">
+        <div className="sidebar">
+          <h3>Add Fleet</h3>
+
+          <input name="regNo" placeholder="Vehicle Reg No" value={form.regNo} onChange={handleChange} />
+
+          <select name="category" value={form.category} onChange={handleChange}>
+            <option value="">Select Category</option>
+            <option value="Auto">Auto</option>
+            <option value="Car">Car</option>
+            <option value="Truck">Truck</option>
+            <option value="Bus">Bus</option>
+          </select>
+
+          <input name="driver" placeholder="Driver Name" value={form.driver} onChange={handleChange} />
+
+          <button onClick={addFleet}>Add Fleet</button>
+        </div>
+
+        <div className="content">
+          {fleets.map((fleet) => (
+            <FleetCard
+              key={fleet.id}
+              fleet={fleet}
+              updateDriver={updateDriver}
+              toggleStatus={toggleStatus}
+              deleteFleet={deleteFleet}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

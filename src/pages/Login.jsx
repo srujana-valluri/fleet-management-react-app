@@ -1,39 +1,48 @@
- import { useState } from "react";
+ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const [username, setUsername] = useState("");
+const Login = ({ setIsAuthenticated }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const emailRef = useRef();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    emailRef.current.focus();
+  }, []);
+
   const handleLogin = () => {
-    // You can set any credentials you want here
-    if ((username === "admin" && password === "admin") ||
-        (username === "Srujana" && password === "1234")) {
-      localStorage.setItem("isAdmin", "true");
+    if (email === "admin@gmail.com" && password === "admin1234") {
+      alert("Login success");
+      setIsAuthenticated(true);
       navigate("/admin");
     } else {
-      alert("Invalid credentials");
+      alert("Wrong email or password");
     }
   };
 
   return (
-    <div>
+    <div className="login">
       <h2>Admin Login</h2>
+
       <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        ref={emailRef}
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
+
       <input
-        placeholder="Password"
         type="password"
+        placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+
       <button onClick={handleLogin}>Login</button>
     </div>
   );
-}
+};
 
 export default Login;
