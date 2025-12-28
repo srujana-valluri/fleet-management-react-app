@@ -1,35 +1,24 @@
-import React from "react";
+ import React from "react";
 
-const FleetCard = React.memo(
-  ({ fleet, updateDriver, toggleStatus, deleteFleet }) => {
-    console.log("Rendered:", fleet.id);
+const FleetCard = ({ fleet, updateDriver, toggleAvailability, deleteFleet }) => {
+  if (!fleet) return null; // safety check
 
-    return (
-      <div className="card">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/743/743922.png"
-          alt="vehicle"
-        />
+  return (
+    <div style={{ border: "1px solid gray", padding: "10px" }}>
+      <img
+        src="https://via.placeholder.com/150"
+        alt="vehicle"
+        style={{ width: "100%" }}
+      />
+      <h4>{fleet.regNo}</h4>
+      <p>Category: {fleet.category}</p>
+      <p>Driver: {fleet.driver}</p>
+      <p>Availability: {fleet.availability}</p>
+      <button onClick={() => updateDriver(fleet.id)}>Update Driver</button>
+      <button onClick={() => toggleAvailability(fleet.id)}>Toggle Availability</button>
+      <button onClick={() => deleteFleet(fleet.id)}>Delete Vehicle</button>
+    </div>
+  );
+};
 
-        <p><b>Reg No:</b> {fleet.regNo}</p>
-        <p><b>Category:</b> {fleet.category}</p>
-        <p><b>Driver:</b> {fleet.driver}</p>
-        <p><b>Status:</b> {fleet.status}</p>
-
-        <button onClick={() => updateDriver(fleet.id)}>
-          Update Driver
-        </button>
-
-        <button onClick={() => toggleStatus(fleet.id)}>
-          Change Status
-        </button>
-
-        <button onClick={() => deleteFleet(fleet.id)}>
-          Delete
-        </button>
-      </div>
-    );
-  }
-);
-
-export default FleetCard;
+export default React.memo(FleetCard);
